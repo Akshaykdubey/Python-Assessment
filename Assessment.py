@@ -9,7 +9,7 @@ os.chdir('assignment/dataset1/')
 
 
 def xmltojson(file, sub_dir):
-    '''Return json format data of the xml files'''
+    '''Return json format data of the xml files.'''
 
     with open(file, 'rb') as fd:
         xslt_content = fd.read()
@@ -21,7 +21,7 @@ def xmltojson(file, sub_dir):
 
 
 def propertiestoxml(file, sub_dir):
-    '''Return json format data of the properties files'''
+    '''Return json format data of the properties files.'''
 
     properties_json = dict()
     with open(file, "r") as fp:
@@ -35,7 +35,7 @@ def propertiestoxml(file, sub_dir):
 
 
 def jsonmodxml(json_data, sub_dir, elk_json, filename):
-    '''Return xml content to be used in the final json file'''
+    '''Return xml content to be used in the final json file.'''
 
     for value in json_data['result']['suites']['suite']:
         json_file = dict()
@@ -69,9 +69,9 @@ def jsonmodxml(json_data, sub_dir, elk_json, filename):
 
 
 def finaljson(arg):
-    '''Return the final json file used to import in ELK'''
+    '''Return the final json file used to import in ELK.'''
 
-    # Getting the path of the script
+    # Getting the path of the script.
     file_path = os.path.dirname(os.path.join(sys.path[0],
                                 os.path.basename(
                                     os.path.realpath(sys.argv[0]))))
@@ -101,7 +101,7 @@ def finaljson(arg):
             for elk_json_xml_val in elk_json_xml:
                 elk_json_xml_val.update(prop_json)
 
-        # This is to make sure no blank dicts are inserted in the list
+        # This is to make sure no blank dicts are inserted in the list.
         if job_name:
             elk_json.append(elk_json_xml)
             elk_json_list_final.append(elk_json_xml)
@@ -116,9 +116,9 @@ def finaljson(arg):
             path = file_path + os.sep + json_filename
             for filename in os.listdir(file_path):
                 # Goes into 'if' when the <job_name>_<job_number>.json don't
-                # exists
+                # exists.
                 if filename == json_filename and os.path.isfile(path):
-                    # Can also append the data if thats the requirement
+                    # Can also append the data if thats the requirement.
                     with open(path, 'w') as f:
                         print(json.dumps(elk_json_list_final[0],
                               indent=4, sort_keys=True), file=f)
@@ -137,7 +137,7 @@ def finaljson(arg):
 
 if __name__ == "__main__":
 
-    # Check to make sure extra or invalid arguments are not passed
+    # Check to make sure extra or invalid arguments are not passed.
     if len(sys.argv) > 2:
         print("Error: Please provide no argument or argument 's' to generate",
               "the data ")
@@ -146,7 +146,7 @@ if __name__ == "__main__":
               "tfile")
         sys.exit(0)
 
-    # Making sure the argument is kept optional
+    # Making sure the argument is kept optional.
     try:
         arg = sys.argv[1]
         if arg != '-s':
