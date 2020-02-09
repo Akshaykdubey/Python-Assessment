@@ -3,6 +3,7 @@ import os
 from lxml import etree
 import json
 import sys
+from datetime import datetime, timedelta
 
 path = os.getcwd()
 os.chdir('assignment/dataset1/')
@@ -27,9 +28,14 @@ def propertiestoxml(file, sub_dir):
     with open(file, "r") as fp:
         for line in fp.readlines():
             split_data = line.split('=',)
-
-            # Used to remove the \n characters from the o/p.
-            properties_json[split_data[0]] = split_data[1].split('\n')[0]
+            # Revision needs to be numeric
+            if split_data[0] == 'revision':
+                properties_json[split_data[0]] = int(
+                                                     split_data[1].split(
+                                                         '\n')[0]
+                                                     )
+            else:
+                properties_json[split_data[0]] = split_data[1].split('\n')[0]
 
     return properties_json
 
@@ -44,23 +50,38 @@ def jsonmodxml(json_data, sub_dir, elk_json, filename):
         json_file['name'] = value['name']
         json_file['stdout'] = value['stdout']
         json_file['stderr'] = value['stderr']
-        json_file['timestamp'] = value['timestamp']
+        timestamp = value['timestamp']
+        json_file['timestamp'] = timestamp
         json_file['duration'] = value['duration']
 
         for values in value['cases']['case']:
             json_file_child = dict()
             json_xml_dummy = dict()
             json_file_child['className'] = values['className']
-            json_file_child['skipped'] = values['skipped']
-            json_file_child['duration'] = values['duration']
+            json_file_child['skipped'] = bool(values['skipped'])
+            json_file_child['duration'] = float(values['duration'])
             json_file_child['testName'] = values['testName']
+            # There are 2 cases for timedate format in xml file.
+            # One having milliseconds and one having only seconds.
+            # Covering both the cases here.
+            try:
+                date_time_obj = datetime.strptime(timestamp,
+                                                  "%Y-%m-%dT%H:%M:%S.%f")
+            except ValueError:
+                date_time_obj = datetime.strptime(timestamp,
+                                                  "%Y-%m-%dT%H:%M:%S")
+            json_file_child['starttime'] = str(
+                                               date_time_obj + 
+                                               timedelta(seconds=float(
+                                                   json_file_child['duration'])
+                                               ))
             json_file_child['id'] = (values['testName'] +
                                      '_' +
                                      values['className'])
             if values['failedSince'] != '0':
-                json_file_child['passed'] = 0
+                json_file_child['passed'] = bool(0)
             else:
-                json_file['passed'] = 1
+                json_file['passed'] = bool(1)
             json_xml_dummy = json_file.copy()
             json_xml_dummy.update(json_file_child)
             elk_json.append(json_xml_dummy)
@@ -129,10 +150,12 @@ def finaljson(arg):
     if arg:
         return 1
     else:
+        # Joining all the lists of dict in the stdout
+        elk_json = [j for i in elk_json for j in i]
         sub_dir_json = file_path + os.sep + 'stdout'
         # Dump the json data to stdout file when no argument is passed.
         with open(sub_dir_json, 'w') as f:
-            print(json.dumps(elk_json[0], indent=4, sort_keys=True), file=f)
+            print(json.dumps(elk_json, indent=4, sort_keys=True), file=f)
 
 
 if __name__ == "__main__":
