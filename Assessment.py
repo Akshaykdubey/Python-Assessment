@@ -71,7 +71,7 @@ def jsonmodxml(json_data, sub_dir, elk_json, filename):
                 date_time_obj = datetime.strptime(timestamp,
                                                   "%Y-%m-%dT%H:%M:%S")
             json_file_child['starttime'] = str(
-                                               date_time_obj + 
+                                               date_time_obj +
                                                timedelta(seconds=float(
                                                    json_file_child['duration'])
                                                ))
