@@ -11,4 +11,4 @@ Convert xml files to json format file compatible with ELK
         user	0m8.870s
         sys	0m0.865s
 
-Note: This is only for the Assessment purpose. No files have been attached to this repo except the script. 
+Note: This is only for the Assessment purpose. No files have been attached to this repo except the script and the o/p files. 
