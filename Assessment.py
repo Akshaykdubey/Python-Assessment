@@ -71,6 +71,7 @@ def jsonmodxml(json_data, sub_dir, elk_json, filename):
 def finaljson(arg):
     '''Return the final json file used to import in ELK'''
 
+    # Getting the path of the script
     file_path = os.path.dirname(os.path.join(sys.path[0],
                                 os.path.basename(
                                     os.path.realpath(sys.argv[0]))))
@@ -100,17 +101,22 @@ def finaljson(arg):
             for elk_json_xml_val in elk_json_xml:
                 elk_json_xml_val.update(prop_json)
 
+        # This is to make sure no blank dicts are inserted in the list
         if job_name:
             elk_json.append(elk_json_xml)
             elk_json_list_final.append(elk_json_xml)
 
+        # This block creates the individual files in format
+        # <job_name>_<job_number>.json
         # Making sure it creates/appends individual files if arg is passed as
-        # an argument and job_name is required to be true else it moght create
-        # files for other sub directory
+        # an argument and job_name is required to be true else it might create
+        # files for other sub directory.
         if arg and job_name:
             json_filename = job_name + '_' + os.path.basename(subdir) + '.json'
             path = file_path + os.sep + json_filename
             for filename in os.listdir(file_path):
+                # Goes into 'if' when the <job_name>_<job_number>.json don't
+                # exists
                 if filename == json_filename and os.path.isfile(path):
                     # Can also append the data if thats the requirement
                     with open(path, 'w') as f:
@@ -124,6 +130,7 @@ def finaljson(arg):
         return 1
     else:
         sub_dir_json = file_path + os.sep + 'stdout'
+        # Dump the json data to stdout file when no argument is passed.
         with open(sub_dir_json, 'w') as f:
             print(json.dumps(elk_json[0], indent=4, sort_keys=True), file=f)
 
@@ -138,6 +145,8 @@ if __name__ == "__main__":
         print("\ts: generates json data with the <job_name>_<job_number>.json",
               "tfile")
         sys.exit(0)
+
+    # Making sure the argument is kept optional
     try:
         arg = sys.argv[1]
         if arg != '-s':
