@@ -15,7 +15,7 @@ def xmltojson(file, sub_dir):
         xslt_content = fd.read()
         xslt_root = etree.XML(xslt_content)
 
-        # To make sure the case has a value of List of dicts
+        # To make sure the case has a value of List of dicts.
         xml_data = convert(xslt_root, alwaysList=".//case")
     return xml_data
 
@@ -28,7 +28,7 @@ def propertiestoxml(file, sub_dir):
         for line in fp.readlines():
             split_data = line.split('=',)
 
-            # Used to remove the \n characters from the o/p
+            # Used to remove the \n characters from the o/p.
             properties_json[split_data[0]] = split_data[1].split('\n')[0]
 
     return properties_json
