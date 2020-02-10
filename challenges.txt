@@ -1,0 +1,71 @@
+===================1===================
+There was error for unicode strings with encoding declaration are not supported.
+It was caused in the convert func.
+
+convert func:
+xml_data = convert(fd.read())
+
+ValueError: Unicode strings with encoding declaration are not supported. Please use bytes input or XML fragments without declaration.
+
+xslt_content = fd.read()
+This implicitly decodes the bytes in the file to Unicode text, using the default encoding. (This might give wrong results, if the XML file isn't in that encoding.)
+
+Then wrote the below code to deal with it
+xslt_root = etree.XML(xslt_content)
+XML has its own handling and signalling for encodings, the <?xml encoding="..."?> prolog. If you pass a Unicode string starting with <?xml encoding="..."?> to a parser, the parser would like to reintrepret the rest of the byte string using that encoding... but can't, because you've already decoded the byte input to a Unicode string.
+
+
+with open(file, 'rb') as fd:
+"rb" mode opens the file in binary format for reading
+
+if fd.read() used directly for converting --> xml_data = convert(fd.read()), it throws:
+AttributeError: 'bytes' object has no attribute 'tag'
+===================/1===================
+
+
+===================2====================
+properties_json[split_data[0]] = split_data[1].split('\n')[0] used to remove the below \n characters from the o/p
+
+{'brand': 'CNE\n',
+ 'category': 'frontend\n',
+ 'job_name': 'fe.buildtest\n',
+ 'revision': '226063\n',
+ 'runtype': 'sandbox\n'}
+
+===================/2===================
+
+
+===================3====================
+had to make sure that the 'case' values are inserted in a list.
+xml_data = convert(xslt_root, alwaysList=".//case")
+
+used from lxml2json import convert which has the advantage to specify which values can be made as a list.
+===================/3====================
+
+
+===================4=====================
+There are 2 cases for datetime format in xml file.
+    One having milliseconds and one having only seconds.
+    Covering both the cases here.
+
+used strptime to parse the datetime value
+===================/4=====================
+
+
+===================5======================
+Getting the path of the script was a challenge.
+__file__ value is not reliable. so had to useargv value and path value to determine the path of script
+	file_path = os.path.dirname(os.path.join(sys.path[0],
+                                	os.path.basename(
+                                    	os.path.realpath(sys.argv[0]))))
+
+===================/5=====================
+
+===================6======================
+There were cases when it was iterating over the directories and sub-directories and creating unintended json files. So, I made it to write the json file if the job_name parameter was present.
+===================/6=====================
+
+===================7======================
+Wrote minor checks to make sure that wrong argument or excessive arguments are not provided.
+
+===================/7=====================
