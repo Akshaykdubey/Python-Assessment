@@ -17,4 +17,7 @@ Convert xml files to json format file compatible with ELK
         user	0m5.625s
         sys	0m0.172s
 
+### pep8 clean code
+    pycodestyle --first Assessment.py
+
 Note: This is only for the Assessment purpose. No files have been attached to this repo except the script and the o/p files. 
