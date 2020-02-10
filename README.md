@@ -21,3 +21,4 @@ Convert xml files to json format file compatible with ELK
     pycodestyle --first Assessment.py
 
 Note: This is only for the Assessment purpose. No files have been attached to this repo except the script and the o/p files. 
+To execute this script and get the o/p, put it in the path where the assignment folder is present.
