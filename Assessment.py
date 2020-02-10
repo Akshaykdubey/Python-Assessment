@@ -1,3 +1,5 @@
+#!/usr/bin/env python3
+
 from lxml2json import convert
 import os
 from lxml import etree
